@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 module.exports = {
 	register: async (req, res) => {
 		const { username, password } = req.body;
+		const img = `https://robohash.org/${username}`
 		const db = req.app.get("db");
 
 		let user = await db.check_user(username);
@@ -12,8 +13,8 @@ module.exports = {
 
 		let salt = bcrypt.genSaltSync(10);
 		let hash = bcrypt.hashSync(password, salt);
-		let newUser = await db.register_user(username, hash);
-		console.log(newUser)
+		let newUser = await db.register_user(username, hash, img);
+		// console.log(newUser)
 		req.session.user = newUser[0];
 		res.status(201).send(req.session.user);
 	},
@@ -29,7 +30,7 @@ module.exports = {
 		if (!authenticated) {
 			return res.status(401).send("Password is incorrect");
 		}
-		console.log(user)
+		// console.log(user)
 		delete user[0].hash;
 		req.session.user = user[0];
 		res.status(202).send(req.session.user);

@@ -1,6 +1,7 @@
-insert into posts (title, img, content)
+insert into posts (title, img, content, author_id)
 values (
     $1,
     $2,
-    $3
+    $3,
+    $4
 );

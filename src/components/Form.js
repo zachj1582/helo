@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import axios from 'axios'
+import {connect} from 'react-redux'
 
 class Form extends Component {
     constructor(props){
@@ -18,7 +19,8 @@ class Form extends Component {
 
     post = () => {
         const {title, img, content} = this.state
-        axios.post('/api/post', {title, img, content}).then(() => {
+        const {id} = this.props.user
+        axios.post('/api/post', {title, img, content, id}).then(() => {
             this.props.history.push('/dashboard')
         }).catch(err => console.log(err))
     }
@@ -31,7 +33,7 @@ class Form extends Component {
                 name='title'
                 value={this.state.title}
                 onChange={e=>this.handleInput(e)} />
-                <img src={this.state.img || 'https://github.com/DevMountain/simulation-3/blob/master/assets/no_image.jpg?raw=true' }/>
+                <img src={this.state.img || 'https://github.com/DevMountain/simulation-3/blob/master/assets/no_image.jpg?raw=true'} alt=''/>
                 <p>Image URL:</p>
                 <input 
                 name='img'
@@ -47,5 +49,9 @@ class Form extends Component {
         )
     }
 }
+function mapStateToProps(state){
+    return {user: state.reducer.user}
 
-export default Form
+}
+
+export default connect(mapStateToProps)(Form)

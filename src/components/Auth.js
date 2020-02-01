@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import {connect} from 'react-redux'
 import {getUser} from '../ducks/reducer'
+import {withRouter} from "react-router-dom"
 
 class Auth extends Component {
     constructor(props){
@@ -62,4 +63,4 @@ function mapStateToProps(state) {
     return {user: state.reducer.user}
 }
 
-export default connect(mapStateToProps, {getUser})(Auth)
+export default connect(mapStateToProps, {getUser})(withRouter(Auth))

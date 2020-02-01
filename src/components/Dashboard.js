@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
-import {connect} from 'react-redux'
-import {getUser} from '../ducks/reducer'
+import { connect } from "react-redux";
+import { getUser } from "../ducks/reducer";
+import { withRouter } from "react-router-dom";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -14,13 +15,23 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-      console.log(this.props.user)
-      const {id} = this.props.user
-      const {search, userPosts} = this.state
+    console.log(this.props.user);
+    const { id } = this.props.user;
+    const { search, userPosts } = this.state;
     axios
-      .get(`/api/posts/${id}?${search, userPosts}`)
+      .get("/auth/user")
       .then(res => {
-        this.setState({ posts: res.data });
+        if (res.data === "No user on session") {
+          this.props.history.push("/");
+        } else {
+          this.props.getUser(res.data);
+        }
+        axios
+          .get(`/api/posts/${id}?search=${search}&userposts=${userPosts}`)
+          .then(res => {
+            this.setState({ posts: res.data });
+          })
+          .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
   }
@@ -32,9 +43,23 @@ class Dashboard extends Component {
     });
   };
 
+  toggleCheck = () => {
+      this.setState({userPosts: !this.state.userPosts})
+  }
+
   render() {
     const { posts, search, userPosts } = this.state;
+    let mappedPosts = posts.map(e => {
+      return (
+        <div key={e.id}>
+          <h1>{e.title}</h1>
+          <p>{e.username}</p>
+          <img src={e.profile_pic || `https://robohash.org/${e.username}`} alt='' />
 
+        </div>
+      );
+    });
+    console.log("mapped", posts);
     return (
       <div>
         <div>
@@ -47,18 +72,10 @@ class Dashboard extends Component {
           <button>search icon</button>
           <button>Reset</button>
           <p>My Posts</p>
-          <input type="checkbox" />
+          <input type="checkbox" onClick={()=> this.toggleCheck()} checked={this.state.userPosts}/>
         </div>
         <div onClick={() => this.props.history.push("/post")}>
-          {/* {this.state.posts.map(e => {
-            return (
-              <div>
-                title={e.title}
-                name={e.username}
-                author={e.author}
-              </div>
-            );
-          })} */}
+          {mappedPosts}
         </div>
       </div>
     );
@@ -66,7 +83,7 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-    return {user: state.reducer.user}
+  return { user: state.reducer.user };
 }
 
-export default connect(mapStateToProps, {getUser})(Dashboard);
+export default connect(mapStateToProps, { getUser })(withRouter(Dashboard));

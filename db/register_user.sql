@@ -1,6 +1,7 @@
-insert into users (username, hash)
+insert into users (username, hash, profile_pic)
 values (
     $1,
-    $2
+    $2,
+    $3
 )
-returning id, username;
+returning id, username, profile_pic;
