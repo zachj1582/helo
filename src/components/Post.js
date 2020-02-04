@@ -1,45 +1,49 @@
-import React, {Component} from 'react'
-import axios from 'axios'
+import React, { Component } from "react";
+import axios from "axios";
 
 class Post extends Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            title: '',
-            img:'',
-            content:'',
-            author:'',
-            authorPic:''
-        }
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: "",
+      img: "",
+      content: "",
+      username: "",
+      authorPic: ""
+    };
+  }
 
-    componentDidMount(){
-        console.log(this.props.match.params)
-        axios.get(`/api/posts/${this.props.match.params.id}`).then(res => {
-            console.log(res.data)
-            const {title, img, content, author, authorPic} = res.data
-            this.setState({
-                title,
-                img,
-                content,
-                author,
-                authorPic
-            })
-        }).catch(err=>console.log(err))
-    }
+  componentDidMount=() =>{
+    console.log(this.props.match.params);
+    axios
+      .get(`/api/post/${this.props.match.params.id}`)
+      .then(res => {
+        console.log(res.data);
+        const { title, img, content, username, profile_pic } = res.data[0];
+        this.setState({
+          title,
+          img,
+          content,
+          username,
+          authorPic: profile_pic
+        });
+      })
+      .catch(err => console.log(err));
+  }
 
-
-    render(){
-        return(
-            <div>
-                <h1></h1>
-                <img/>
-                <p></p>
-                <p></p>
-                <img/>
-            </div>
-        )
-    }
+  render() {
+    const { title, img, content, username, authorPic } = this.state;
+    console.log(title, username)
+    return (
+      <div>
+        <h1>{title}</h1>
+        <img src={img} alt='' />
+        <p> {content} </p>
+        <p> {username}</p>
+        <img src={authorPic} alt='' />
+      </div>
+    );
+  }
 }
 
-export default Post
+export default Post;

@@ -15,6 +15,12 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this.reRender();
+  }
+
+  reRender = () => {
+    console.log("userPosts", this.state.userPosts);
+    console.log('search', this.state.search)
     console.log(this.props.user);
     const { id } = this.props.user;
     const { search, userPosts } = this.state;
@@ -34,7 +40,7 @@ class Dashboard extends Component {
           .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
-  }
+  };
 
   handleInput = e => {
     const { name, value } = e.target;
@@ -43,23 +49,32 @@ class Dashboard extends Component {
     });
   };
 
-  toggleCheck = () => {
-      this.setState({userPosts: !this.state.userPosts})
+  toggleCheck = e => {
+    this.setState({ userPosts: !this.state.userPosts });
+    this.reRender();
+  };
+
+  reset = () => {
+      this.setState({search:'' })
+    this.reRender()
   }
 
   render() {
-    const { posts, search, userPosts } = this.state;
+    const { posts, search } = this.state;
     let mappedPosts = posts.map(e => {
       return (
-        <div key={e.id}>
+        <div key={e.id} onClick={() => this.props.history.push(`/post/${e.id}`)}>
           <h1>{e.title}</h1>
           <p>{e.username}</p>
-          <img src={e.profile_pic || `https://robohash.org/${e.username}`} alt='' />
-
+          <img
+            src={e.profile_pic || `https://robohash.org/${e.username}`}
+            alt=""
+          />
         </div>
       );
     });
-    console.log("mapped", posts);
+    console.log("mapped", mappedPosts);
+    console.log(mappedPosts.key)
     return (
       <div>
         <div>
@@ -67,14 +82,19 @@ class Dashboard extends Component {
             placeholder="Search by Title"
             name="search"
             value={this.state.search}
-            onChange={e => this.handleInput()}
+            onChange={e => this.handleInput(e)}
           />
-          <button>search icon</button>
-          <button>Reset</button>
+          <button onClick={()=> this.reRender()}>search icon</button>
+          <button onClick={()=> this.reset()}>Reset</button>
           <p>My Posts</p>
-          <input type="checkbox" onClick={()=> this.toggleCheck()} checked={this.state.userPosts}/>
+          <input
+          name='userPosts'
+            type="checkbox"
+            onChange={e => this.toggleCheck()}
+            checked={this.state.userPosts}
+          />
         </div>
-        <div onClick={() => this.props.history.push("/post")}>
+        <div >
           {mappedPosts}
         </div>
       </div>

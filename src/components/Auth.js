@@ -40,7 +40,7 @@ class Auth extends Component {
     render(){
         return(
             <div>
-                <img/>
+                <img alt=''/>
                 <h1>Helo</h1>
                 <p>Username:</p>
                 <input 

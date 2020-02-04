@@ -36,3 +36,4 @@ app.get('/auth/user', ac.getUser)
 //posts
 app.get('/api/posts/:id', pc.allPosts)
 app.post('/api/post', pc.addPost)
+app.get('/api/post/:id', pc.getPost)
