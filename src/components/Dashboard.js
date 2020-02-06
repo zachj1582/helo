@@ -19,6 +19,7 @@ class Dashboard extends Component {
   }
 
   reRender = () => {
+    console.log("rerender", this.state.search);
     const { id } = this.props.user;
     const { search, userPosts } = this.state;
     axios
@@ -47,18 +48,20 @@ class Dashboard extends Component {
   };
 
   toggleCheck = e => {
-    this.setState({ userPosts: e.target.checked });
-    console.log(this.state.userPosts)
-    this.reRender();
+    this.setState({ userPosts: e.target.checked }, () => {
+      this.reRender();
+    });
   };
 
   reset = () => {
-    this.setState({ search: "" });
-    this.reRender();
+    console.log(this.state.search);
+    this.setState({ search: "" }, () => {
+      this.reRender();
+    });
   };
 
   render() {
-    const { posts, search } = this.state;
+    const { posts } = this.state;
     let mappedPosts = posts.map(e => {
       return (
         <div
