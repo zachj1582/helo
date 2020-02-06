@@ -19,9 +19,6 @@ class Dashboard extends Component {
   }
 
   reRender = () => {
-    console.log("userPosts", this.state.userPosts);
-    console.log('search', this.state.search)
-    console.log(this.props.user);
     const { id } = this.props.user;
     const { search, userPosts } = this.state;
     axios
@@ -50,20 +47,24 @@ class Dashboard extends Component {
   };
 
   toggleCheck = e => {
-    this.setState({ userPosts: !this.state.userPosts });
+    this.setState({ userPosts: e.target.checked });
+    console.log(this.state.userPosts)
     this.reRender();
   };
 
   reset = () => {
-      this.setState({search:'' })
-    this.reRender()
-  }
+    this.setState({ search: "" });
+    this.reRender();
+  };
 
   render() {
     const { posts, search } = this.state;
     let mappedPosts = posts.map(e => {
       return (
-        <div key={e.id} onClick={() => this.props.history.push(`/post/${e.id}`)}>
+        <div
+          key={e.id}
+          onClick={() => this.props.history.push(`/post/${e.id}`)}
+        >
           <h1>{e.title}</h1>
           <p>{e.username}</p>
           <img
@@ -73,30 +74,30 @@ class Dashboard extends Component {
         </div>
       );
     });
-    console.log("mapped", mappedPosts);
-    console.log(mappedPosts.key)
     return (
-      <div>
-        <div>
-          <input
-            placeholder="Search by Title"
-            name="search"
-            value={this.state.search}
-            onChange={e => this.handleInput(e)}
-          />
-          <button onClick={()=> this.reRender()}>search icon</button>
-          <button onClick={()=> this.reset()}>Reset</button>
-          <p>My Posts</p>
-          <input
-          name='userPosts'
-            type="checkbox"
-            onChange={e => this.toggleCheck()}
-            checked={this.state.userPosts}
-          />
+      <div className="dash">
+        <div className="content_box dash_search">
+          <div className="dash_search_box">
+            <input
+              placeholder="Search by Title"
+              name="search"
+              value={this.state.search}
+              onChange={e => this.handleInput(e)}
+            />
+            <button onClick={() => this.reRender()}>search icon</button>
+            <button onClick={() => this.reset()}>Reset</button>
+          </div>
+          <div>
+            <p>My Posts</p>
+            <input
+              name="userPosts"
+              type="checkbox"
+              onChange={e => this.toggleCheck(e)}
+              checked={this.state.userPosts}
+            />
+          </div>
         </div>
-        <div >
-          {mappedPosts}
-        </div>
+        <div>{mappedPosts}</div>
       </div>
     );
   }
